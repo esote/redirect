@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"syscall"
 
 	"github.com/esote/graceful"
 	"github.com/esote/openshim"
@@ -35,6 +36,10 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	if err := syscall.Chroot("."); err != nil {
+		log.Fatal(err)
+	}
+
 	if _, err := openshim.Pledge("stdio inet", ""); err != nil {
 		log.Fatal(err)
 	}
