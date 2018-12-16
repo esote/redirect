@@ -36,6 +36,8 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	initFlags()
+
 	if err := syscall.Chroot("."); err != nil {
 		log.Fatal(err)
 	}
@@ -43,8 +45,6 @@ func main() {
 	if _, err := openshim.Pledge("stdio inet", ""); err != nil {
 		log.Fatal(err)
 	}
-
-	initFlags()
 
 	srv := &http.Server{
 		Addr:    fl.sourcePort,
