@@ -7,13 +7,14 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"syscall"
 
 	"github.com/esote/graceful"
-	"github.com/esote/openshim"
+	"golang.org/x/sys/unix"
 )
 
 func redirect(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +43,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if _, err := openshim.Pledge("stdio inet", ""); err != nil {
+	// force init of lazy sysctls
+	if l, err := net.Listen("tcp", "localhost:0"); err != nil {
+		log.Fatal(err)
+	} else {
+		l.Close()
+	}
+
+	if err := unix.Pledge("stdio inet", ""); err != nil {
 		log.Fatal(err)
 	}
 
