@@ -37,17 +37,17 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	initFlags()
-
-	if err := syscall.Chroot("."); err != nil {
-		log.Fatal(err)
-	}
-
 	// force init of lazy sysctls
 	if l, err := net.Listen("tcp", "localhost:0"); err != nil {
 		log.Fatal(err)
 	} else {
 		l.Close()
+	}
+
+	initFlags()
+
+	if err := syscall.Chroot("."); err != nil {
+		log.Fatal(err)
 	}
 
 	if err := unix.Pledge("stdio inet", ""); err != nil {
