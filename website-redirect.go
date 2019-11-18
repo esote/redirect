@@ -1,67 +1,48 @@
-// Copyright 2018 Esote. All rights reserved. Use of this source code is
-// governed by an MIT license that can be found in the LICENSE file.
-
-// Redirects from one port to another.
-
 package main
 
 import (
 	"log"
-	"net"
 	"net/http"
 	"net/url"
-	"os"
-	"syscall"
 
-	"github.com/esote/graceful"
-	"golang.org/x/sys/unix"
+	"github.com/esote/openshim2"
 )
 
-func redirect(w http.ResponseWriter, r *http.Request) {
-	host, err := url.Parse(fl.sourceScheme + "://" + r.Host)
+func init() {
+	if err := openshim2.LazySysctls(); err != nil {
+		log.Fatal(err)
+	}
+}
 
-	if err != nil {
-		log.Print(err)
-		return
-	} else if host.Hostname() == "" {
-		log.Print("invalid hostname")
+func redirect(w http.ResponseWriter, r *http.Request) {
+	host, err := url.Parse("http://" + r.Host)
+
+	if err != nil || host.Hostname() == "" {
 		return
 	}
 
 	u := &url.URL{
-		Scheme: fl.targetScheme,
-		Host:   host.Hostname() + fl.targetPort,
+		Scheme: "https",
+		Host:   host.Hostname() + ":443",
 	}
 
 	http.Redirect(w, r, u.String(), http.StatusPermanentRedirect)
 }
 
 func main() {
-	// force init of lazy sysctls
-	if l, err := net.Listen("tcp", "localhost:0"); err != nil {
-		log.Fatal(err)
-	} else {
-		l.Close()
-	}
-
-	initFlags()
-
-	if err := syscall.Chroot("."); err != nil {
+	if err := openshim2.Unveil("/", ""); err != nil {
 		log.Fatal(err)
 	}
-
-	if err := unix.Pledge("stdio inet", ""); err != nil {
+	if err := openshim2.Pledge("stdio inet", ""); err != nil {
 		log.Fatal(err)
 	}
 
 	srv := &http.Server{
-		Addr:    fl.sourcePort,
+		Addr:    ":8441",
 		Handler: http.HandlerFunc(redirect),
 	}
 
-	graceful.Graceful(srv, func() {
-		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			log.Fatal(err)
-		}
-	}, os.Interrupt)
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }

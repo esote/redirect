@@ -1,1 +1,1 @@
-Redirect (308) from source to target. Ignores URL path. Must be run by superuser to make chroot syscall and to listen on default ports.
+Redirect (308) to HTTPS. Ignores URL path.
