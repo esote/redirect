@@ -1,1 +1,28 @@
-Redirect (308) to HTTPS. Ignores URL path.
+NAME
+	redirect - web server for 308 subdomain redirects
+
+SYNOPSIS
+	redirect file
+
+DESCRIPTION
+	redirect is a web server for 308 subdomain redirects.
+
+	The input file to redirect describes the valid subdomain routes. Each
+	line consists of a "from" host and "to" URL separated by space. For
+	example:
+
+		localhost:8441		https://localhost:1001
+		w.localhost:8441	https://x.localhost:1002
+		x.localhost:8441	https://z.localhost:1003
+
+	The listening port, buffer length, and queue size are defined in
+	redirect.h. The default port is 8441, the "from" route hosts should
+	match this port.
+
+AUTHORS
+	redirect was written by Esote.
+
+COPYRIGHT
+	Copyright (c) 2019 Esote. There is NO warranty. You may redistribute
+	this software under the terms of the GNU Affero General Public License.
+	For more information, see the LICENSE file.
