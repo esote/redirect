@@ -71,10 +71,8 @@ main(int argc, char *argv[])
 		err(1, "config");
 	}
 
-	if (geteuid() == 0) {
-		if (chroot(".") == -1) {
-			err(1, "chroot");
-		}
+	if (geteuid() == 0 && chroot(".") == -1) {
+		err(1, "chroot");
 	}
 
 #ifdef __OpenBSD__

@@ -40,12 +40,12 @@ respond(int fd, struct route *r)
 		return;
 	}
 
+	buf[n] = '\0';
+
 	if (shutdown(fd, SHUT_RD) == -1) {
 		warn("shutdown rd");
 		return;
 	}
-
-	buf[n] = '\0';
 
 	if ((line = strtok_r(buf, NL, &lastLine)) == NULL) {
 		/* Malformed HTTP request line. */
@@ -87,8 +87,7 @@ respond(int fd, struct route *r)
 		}
 	}
 
-	for (; r->from != NULL && strcmp(r->from, word) != 0; r++) {
-	}
+	for (; r->from != NULL && strcmp(r->from, word) != 0; r++);
 
 	if (r->from == NULL) {
 		/* No route from host. */
