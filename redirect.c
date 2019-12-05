@@ -57,6 +57,7 @@ main(int argc, char *argv[])
 	struct sigaction act;
 	struct sockaddr_in addr;
 	socklen_t addrlen;
+	struct timeval tv;
 	int opt;
 
 	addrlen = sizeof(addr);
@@ -85,6 +86,10 @@ main(int argc, char *argv[])
 		err(1, "socket");
 	}
 
+	if (setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
+		err(1, "setsockopt SO_REUSEADDR");
+	}
+
 	(void)memset(&act, 0, sizeof(act));
 
 	if (sigemptyset(&act.sa_mask) == -1) {
@@ -95,10 +100,6 @@ main(int argc, char *argv[])
 
 	if (sigaction(SIGINT, &act, NULL) == -1) {
 		err(1, "sigaction");
-	}
-
-	if (setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
-		err(1, "setsockopt SO_REUSEADDR");
 	}
 
 	(void)memset(&addr, 0, sizeof(addr));
@@ -115,14 +116,28 @@ main(int argc, char *argv[])
 		err(1, "listen");
 	}
 
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;
+
 	while (1) {
 		if ((afd = accept(sfd, (struct sockaddr *)&addr, &addrlen)) == -1) {
 			warn("accept");
 			continue;
 		}
 
+		if (setsockopt(afd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == -1) {
+			warn("setsockopt SO_RCVTIMEO");
+			goto done;
+		}
+
+		if (setsockopt(afd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) == -1) {
+			warn("setsockopt SO_SNDTIMEO");
+			goto done;
+		}
+
 		respond(afd, routes);
 
+done:
 		if (shutdown(afd, SHUT_RDWR) == -1) {
 			warn("shutdown rdwr");
 		}
