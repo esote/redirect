@@ -137,11 +137,11 @@ main(int argc, char *argv[])
 
 		respond(afd, routes);
 
-done:
 		if (shutdown(afd, SHUT_RDWR) == -1) {
 			warn("shutdown rdwr");
 		}
 
+done:
 		if (close(afd) == -1) {
 			warn("close afd");
 		}
