@@ -5,8 +5,9 @@
 #define SP	" \t\v\f"
 
 #define BUF_LEN		4096
-#define QUEUE_LEN	100
 #define PORT		8441
+#define QUEUE_LEN	100
+#define T_SEC		1
 
 struct route {
 	char *from;

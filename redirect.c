@@ -116,7 +116,7 @@ main(int argc, char *argv[])
 		err(1, "listen");
 	}
 
-	tv.tv_sec = 1;
+	tv.tv_sec = T_SEC;
 	tv.tv_usec = 0;
 
 	while (1) {

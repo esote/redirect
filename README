@@ -15,9 +15,9 @@ DESCRIPTION
 		w.localhost:8441	https://x.localhost:1002
 		x.localhost:8441	https://z.localhost:1003
 
-	The listening port, buffer length, and queue size are defined in
-	redirect.h. The default port is 8441, the "from" route hosts should
-	match this port.
+	The buffer length, listening port, queue size, and timeout duration are
+	defined in redirect.h. The default port is 8441, so the "from" route
+	hosts should match this port.
 
 AUTHORS
 	redirect was written by Esote.
