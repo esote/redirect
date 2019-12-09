@@ -14,7 +14,7 @@
 .\" You should have received a copy of the GNU Affero General Public License
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .\"
-.Dd $Mdocdate: December 2 2019 $
+.Dd $Mdocdate: December 9 2019 $
 .Dt REDIRECT 1
 .Os
 .Sh NAME
@@ -25,15 +25,15 @@
 file
 .Sh DESCRIPTION
 .Nm redirect
-is a web server for 308 subdomain redirects.
+is a web server for subdomain redirects.
 .Pp
 The input file to
 .Nm redirect
 describes the valid subdomain routes.
 Each line consists of a
-.Qq from
+.Dq from
 host and
-.Qq to
+.Dq to
 URL separated by space.
 For example:
 .Bd -literal -offset indent
@@ -42,18 +42,36 @@ w.localhost:8441	https://x.localhost:1002
 x.localhost:8441	https://z.localhost:1003
 .Ed
 .Pp
-The buffer length, listening port, queue size, and timeout duration are defined
-in redirect.h.
-The default port is 8441, so the "from" route hosts should match this port.
-.Qq from
-route hosts should match this port.
+.Pa redirect.h
+defines the following macros:
+.Bl -tag -width HTTP_TEXT -offset indent
+.It Dv BUF_LEN
+buffer size for reading requests and wririting responses.
+.It Dv PORT
+server listening port, the port of
+.Dq from
+routes in the config file should match this port.
+.It Dv QUEUE_LEN
+listening backlog length.
+.It Dv T_SEC
+read and write timeout in seconds.
+.It Dv HTTP_CODE
+HTTP status code for the redirect response, such as 301 or 308.
+.It Dv HTTP_TEXT
+message phrase for
+.Dv HTTP_CODE .
+.El
 .Sh AUTHORS
 .Nm redirect
 was written by
-.An Esote
+.An Esote .
 .Sh COPYRIGHT
-Copyright (c) 2019 Esote.
+Copyright
+.Pq c
+2019 Esote.
 There is NO warranty.
 You may redistribute this software under the terms of the GNU Affero General
 Public License.
-For more information, see the LICENSE file.
+For more information, see the
+.Pa LICENSE
+file.

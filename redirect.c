@@ -1,5 +1,5 @@
 /*
- * redirect is a web server for 308 subdomain redirects.
+ * redirect is a web server for subdomain redirects.
  * Copyright (C) 2019 Esote
  *
  * This program is free software: you can redistribute it and/or modify

@@ -1,5 +1,5 @@
 /*
- * redirect is a web server for 308 subdomain redirects.
+ * redirect is a web server for subdomain redirects.
  * Copyright (C) 2019 Esote
  *
  * This program is free software: you can redistribute it and/or modify
@@ -94,11 +94,11 @@ respond(int fd, struct route *r)
 		return;
 	}
 
-	n = snprintf(resp, BUF_LEN, "HTTP/1.1 308 Permanent Redirect\n"
+	n = snprintf(resp, BUF_LEN, "HTTP/1.1 " HTTP_CODE " " HTTP_TEXT "\n"
 		"Content-Length: %zu\n"
 		"Content-Type: text/html; charset=utf-8\n"
 		"Location: %s%s\n\n"
-		"<a href=\"%s%s\">Permanent Redirect</a>.\n\n",
+		"<a href=\"%s%s\">" HTTP_TEXT "</a>.\n\n",
 		36 + strlen(r->to) + strlen(path), r->to, path, r->to, path);
 
 	if (n < 0) {

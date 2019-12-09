@@ -8,6 +8,8 @@
 #define PORT		8441
 #define QUEUE_LEN	100
 #define T_SEC		1
+#define HTTP_CODE	"308"
+#define HTTP_TEXT	"Permanent Redirect"
 
 struct route {
 	char *from;

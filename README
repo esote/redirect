@@ -1,11 +1,11 @@
 NAME
-	redirect - web server for 308 subdomain redirects
+	redirect - web server for subdomain redirects
 
 SYNOPSIS
 	redirect file
 
 DESCRIPTION
-	redirect is a web server for 308 subdomain redirects.
+	redirect is a web server for subdomain redirects.
 
 	The input file to redirect describes the valid subdomain routes. Each
 	line consists of a "from" host and "to" URL separated by space. For
@@ -15,9 +15,22 @@ DESCRIPTION
 		w.localhost:8441	https://x.localhost:1002
 		x.localhost:8441	https://z.localhost:1003
 
-	The buffer length, listening port, queue size, and timeout duration are
-	defined in redirect.h. The default port is 8441, so the "from" route
-	hosts should match this port.
+	redirect.h defines the following macros:
+
+		BUF_LEN		buffer size for reading requests and writing
+				responses.
+
+		PORT		server listening port, the port of "from" routes
+				in the config should match this port.
+
+		QUEUE_LEN	listening backlog length.
+
+		T_SEC		read and write timeout in seconds.
+
+		HTTP_CODE	HTTP status code for the redirect response, such
+				as 301 or 308.
+
+		HTTP_TEXT	message phrase for HTTP_CODE.
 
 AUTHORS
 	redirect was written by Esote.
