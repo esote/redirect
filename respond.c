@@ -99,7 +99,8 @@ respond(int fd, struct route *r)
 		"Content-Type: text/html; charset=utf-8\n"
 		"Location: %s%s\n\n"
 		"<a href=\"%s%s\">" HTTP_TEXT "</a>.\n\n",
-		36 + strlen(r->to) + strlen(path), r->to, path, r->to, path);
+		BODY_LEN + strlen(r->to) + strlen(path), r->to, path, r->to,
+		path);
 
 	if (n < 0) {
 		warn("snprintf");
