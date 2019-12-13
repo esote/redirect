@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 
 #include <err.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,9 @@ respond(int fd, struct route *r)
 	char *path;
 
 	if ((n = read(fd, buf, BUF_LEN-1)) == -1) {
-		warn("read");
+		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINPROGRESS) {
+			warn("read");
+		}
 		return;
 	}
 
@@ -108,6 +111,8 @@ respond(int fd, struct route *r)
 	}
 
 	if (write(fd, resp, (size_t)n) == -1) {
-		warn("write");
+		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINPROGRESS) {
+			warn("write");
+		}
 	}
 }
