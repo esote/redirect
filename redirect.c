@@ -38,11 +38,9 @@ static int sfd, afd;
 static struct route *routes;
 
 static void
-sigint_handler(int sig, siginfo_t *info, void *ucontext)
+sigint_handler(int sig)
 {
 	(void)sig;
-	(void)info;
-	(void)ucontext;
 
 	/* Try to be polite while we're on our way out. */
 	config_free(routes);
@@ -96,10 +94,16 @@ main(int argc, char *argv[])
 		err(1, "sigemptyset");
 	}
 
-	act.sa_sigaction = sigint_handler;
+	act.sa_handler = sigint_handler;
 
 	if (sigaction(SIGINT, &act, NULL) == -1) {
-		err(1, "sigaction");
+		err(1, "sigaction SIGINT");
+	}
+
+	act.sa_handler = SIG_IGN;
+
+	if (sigaction(SIGPIPE, &act, NULL) == -1) {
+		err(1, "sigaction SIGPIPE");
 	}
 
 	(void)memset(&addr, 0, sizeof(addr));
