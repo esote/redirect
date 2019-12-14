@@ -141,7 +141,7 @@ main(int argc, char *argv[])
 
 		respond(afd, routes);
 
-		if (shutdown(afd, SHUT_RDWR) == -1) {
+		if (shutdown(afd, SHUT_RDWR) == -1 && errno != ENOTCONN) {
 			warn("shutdown rdwr");
 		}
 

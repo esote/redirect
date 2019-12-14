@@ -27,6 +27,8 @@
 
 #include "redirect.h"
 
+#define TIMEOUT(X)	((X) == EAGAIN || (X) == EWOULDBLOCK || (X) == EINPROGRESS)
+
 void
 respond(int fd, struct route *r)
 {
@@ -37,7 +39,7 @@ respond(int fd, struct route *r)
 	char *path;
 
 	if ((n = read(fd, buf, BUF_LEN-1)) == -1) {
-		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINPROGRESS) {
+		if (!TIMEOUT(errno)) {
 			warn("read");
 		}
 		return;
@@ -46,7 +48,9 @@ respond(int fd, struct route *r)
 	buf[n] = '\0';
 
 	if (shutdown(fd, SHUT_RD) == -1) {
-		warn("shutdown rd");
+		if (errno != ENOTCONN) {
+			warn("shutdown rd");
+		}
 		return;
 	}
 
@@ -111,7 +115,7 @@ respond(int fd, struct route *r)
 	}
 
 	if (write(fd, resp, (size_t)n) == -1) {
-		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINPROGRESS) {
+		if (!TIMEOUT(errno)) {
 			warn("write");
 		}
 	}
